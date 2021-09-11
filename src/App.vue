@@ -1,39 +1,28 @@
-<script lang="ts">
+<script setup lang="ts">
 import { computed, ref } from '@vue/reactivity'
 import axios from './middleware'
-import { defineComponent, onMounted } from '@vue/runtime-core'
+import { onMounted } from '@vue/runtime-core'
 
-export default defineComponent({
-  setup() {
-    const searchTerm = ref('')
-    const searchResults = ref([])
-    const headerColor = ref('#ff0000')
+const searchTerm = ref('')
+const searchResults = ref([])
+const headerColor = ref('#ff0000')
 
-    const endpoint = computed(() =>
-      searchTerm.value.length ? '/breeds/search' : '/breeds'
-    )
+const endpoint = computed(() =>
+  searchTerm.value.length ? '/breeds/search' : '/breeds'
+)
 
-    async function fetchResults() {
-      const response = await axios.get(endpoint.value, {
-        params: {
-          limit: 20,
-          q: searchTerm.value,
-        },
-      })
-      searchResults.value = response?.data || []
-    }
+async function fetchResults() {
+  const response = await axios.get(endpoint.value, {
+    params: {
+      limit: 20,
+      q: searchTerm.value,
+    },
+  })
+  searchResults.value = response?.data || []
+}
 
-    onMounted(() => {
-      fetchResults()
-    })
-
-    return {
-      searchTerm,
-      searchResults,
-      headerColor,
-      fetchResults,
-    }
-  },
+onMounted(() => {
+  fetchResults()
 })
 </script>
 
