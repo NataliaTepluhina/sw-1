@@ -1,9 +1,9 @@
-<script>
+<script lang="ts">
 import { computed, ref } from '@vue/reactivity'
 import axios from './middleware'
-import { onMounted } from '@vue/runtime-core'
+import { defineComponent, onMounted } from '@vue/runtime-core'
 
-export default {
+export default defineComponent({
   setup() {
     const searchTerm = ref('')
     const searchResults = ref([])
@@ -34,7 +34,7 @@ export default {
       fetchResults,
     }
   },
-}
+})
 </script>
 
 <template>
