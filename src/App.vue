@@ -6,7 +6,7 @@ export default {
     return {
       searchTerm: '',
       searchResults: [],
-      headerColor: 'red',
+      headerColor: '#ff0000',
     }
   },
   computed: {
