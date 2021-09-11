@@ -1,12 +1,46 @@
-<script setup>
-// This starter template is using Vue 3 <script setup> SFCs
-// Check out https://v3.vuejs.org/api/sfc-script-setup.html#sfc-script-setup
-import HelloWorld from './components/HelloWorld.vue'
+<script>
+import axios from './middleware'
+
+export default {
+  data() {
+    return {
+      searchTerm: '',
+      searchResults: [],
+    }
+  },
+  computed: {
+    endpoint() {
+      return this.searchTerm.length ? '/breeds/search' : '/breeds'
+    },
+  },
+  methods: {
+    async fetchResults() {
+      const response = await axios.get(this.endpoint, {
+        params: {
+          limit: 20,
+          q: this.searchTerm,
+        },
+      })
+      this.searchResults = response?.data || []
+    },
+  },
+  mounted() {
+    this.fetchResults()
+  },
+}
 </script>
 
 <template>
-  <img alt="Vue logo" src="./assets/logo.png" />
-  <HelloWorld msg="Hello Vue 3 + Vite" />
+  <h1>Smashing Workshop: Lesson 1</h1>
+  <section>
+    <div>
+      <input type="text" v-model="searchTerm" />
+      <button @click="fetchResults">Search</button>
+    </div>
+    <div>
+      <p v-for="result in searchResults" :key="result.id">{{ result.name }}</p>
+    </div>
+  </section>
 </template>
 
 <style>
