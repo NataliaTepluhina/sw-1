@@ -37,7 +37,7 @@ export default {
   <h1 class="title">Smashing Workshop: Lesson 1</h1>
   <section>
     <div>
-      <input type="text" v-model="searchTerm" />
+      <input type="text" v-model="searchTerm" @keyup.enter="fetchResults" />
       <button @click="fetchResults">Search</button>
     </div>
     <div>
