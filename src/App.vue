@@ -1,32 +1,38 @@
 <script>
+import { computed, ref } from '@vue/reactivity'
 import axios from './middleware'
+import { onMounted } from '@vue/runtime-core'
 
 export default {
-  data() {
-    return {
-      searchTerm: '',
-      searchResults: [],
-      headerColor: 'red',
-    }
-  },
-  computed: {
-    endpoint() {
-      return this.searchTerm.length ? '/breeds/search' : '/breeds'
-    },
-  },
-  methods: {
-    async fetchResults() {
-      const response = await axios.get(this.endpoint, {
+  setup() {
+    const searchTerm = ref('')
+    const searchResults = ref([])
+    const headerColor = ref('#ff0000')
+
+    const endpoint = computed(() =>
+      searchTerm.value.length ? '/breeds/search' : '/breeds'
+    )
+
+    async function fetchResults() {
+      const response = await axios.get(endpoint.value, {
         params: {
           limit: 20,
-          q: this.searchTerm,
+          q: searchTerm.value,
         },
       })
-      this.searchResults = response?.data || []
-    },
-  },
-  mounted() {
-    this.fetchResults()
+      searchResults.value = response?.data || []
+    }
+
+    onMounted(() => {
+      fetchResults()
+    })
+
+    return {
+      searchTerm,
+      searchResults,
+      headerColor,
+      fetchResults,
+    }
   },
 }
 </script>
