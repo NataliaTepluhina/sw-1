@@ -6,6 +6,7 @@ export default {
     return {
       searchTerm: '',
       searchResults: [],
+      headerColor: 'red',
     }
   },
   computed: {
@@ -31,7 +32,9 @@ export default {
 </script>
 
 <template>
-  <h1>Smashing Workshop: Lesson 1</h1>
+  <label for="header-color">Change the title color</label>
+  <input type="color" id="header-color" v-model="headerColor" />
+  <h1 class="title">Smashing Workshop: Lesson 1</h1>
   <section>
     <div>
       <input type="text" v-model="searchTerm" />
@@ -51,5 +54,9 @@ export default {
   text-align: center;
   color: #2c3e50;
   margin-top: 60px;
+}
+
+.title {
+  color: v-bind(headerColor);
 }
 </style>
