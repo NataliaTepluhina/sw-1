@@ -38,6 +38,9 @@ export default {
         this.loading = false
       }
     },
+    toggleLikeStatus(result) {
+      result.liked = !result.liked
+    },
   },
   mounted() {
     this.fetchResults()
@@ -55,7 +58,19 @@ export default {
       <p v-if="error" class="error">Something went wrong. Please try again</p>
     </div>
     <div>
-      <p v-for="result in searchResults" :key="result.id">{{ result.name }}</p>
+      <div v-for="result in searchResults" :key="result.id">
+        <div class="list-item" :class="{ liked: result.liked }">
+          <h3>
+            <a :href="result.wikipedia_url">{{ result.name }}</a>
+          </h3>
+          <p>
+            {{ result.description }}
+          </p>
+          <button @click="toggleLikeStatus(result)">
+            {{ result.liked ? 'Unlike' : 'Like' }}
+          </button>
+        </div>
+      </div>
     </div>
   </section>
 </template>
@@ -65,12 +80,17 @@ export default {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  text-align: center;
   color: #2c3e50;
   margin-top: 60px;
+  text-align: center;
 }
 
-.title {
-  color: v-bind(headerColor);
+.list-item {
+  padding: 10px;
+  border-bottom: 1px solid lightgray;
+}
+
+.liked {
+  background-color: lightcyan;
 }
 </style>
