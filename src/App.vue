@@ -77,8 +77,9 @@ export default {
   margin-top: 60px;
 }
 
-.title {
-  color: v-bind(headerColor);
+.list-item {
+  padding: 10px;
+  border-bottom: 1px solid lightgray;
 }
 
 .error {
