@@ -1,46 +1,33 @@
 <script>
 import axios from './middleware'
+import ApiHandler from './components/ApiHandler.vue'
 
 export default {
+  components: {
+    ApiHandler,
+  },
   data() {
     return {
       searchTerm: '',
-      searchResults: [],
-      loading: false,
-      error: false,
     }
   },
-  computed: {
-    endpoint() {
-      return this.searchTerm.length ? '/breeds/search' : '/breeds'
-    },
+  getResults(searchTerm) {
+    return axios.get(searchTerm.length ? '/breeds/search' : '/breeds', {
+      params: {
+        q: searchTerm,
+        limit: 20,
+      },
+    })
   },
   methods: {
-    async fetchResults() {
-      this.loading = true
-      this.error = false
-      try {
-        const response = await axios.get(this.endpoint, {
-          params: {
-            limit: 20,
-            q: this.searchTerm,
-          },
-        })
-        this.searchResults =
-          response?.data.map((result) => ({
-            ...result,
-            liked: false,
-          })) || []
-      } catch {
-        this.error = true
-        this.searchResults = []
-      } finally {
-        this.loading = false
-      }
+    transformResponse(response) {
+      return (
+        response?.data?.map((result) => ({
+          ...result,
+          liked: false,
+        })) || []
+      )
     },
-  },
-  mounted() {
-    this.fetchResults()
   },
 }
 </script>
@@ -48,15 +35,26 @@ export default {
 <template>
   <h1 class="title">Smashing Workshop: Lesson 2</h1>
   <section>
-    <div>
-      <input type="text" v-model="searchTerm" @keyup.enter="fetchResults" />
-      <button @click="fetchResults">Search</button>
-      <p v-if="loading">Loading...</p>
-      <p v-if="error" class="error">Something went wrong. Please try again</p>
-    </div>
-    <div>
-      <p v-for="result in searchResults" :key="result.id">{{ result.name }}</p>
-    </div>
+    <api-handler :searchTerm="searchTerm" :getResults="$options.getResults">
+      <template #default="{ loading, error, searchResults, runSearch }">
+        <div>
+          <input type="text" v-model="searchTerm" @keyup.enter="fetchResults" />
+          <button @click="runSearch">Search</button>
+          <p v-if="loading">Loading...</p>
+          <p v-if="error" class="error">
+            Something went wrong. Please try again
+          </p>
+        </div>
+        <div>
+          <p
+            v-for="result in transformResponse(searchResults)"
+            :key="result.id"
+          >
+            {{ result.name }}
+          </p>
+        </div>
+      </template>
+    </api-handler>
   </section>
 </template>
 
@@ -70,7 +68,8 @@ export default {
   margin-top: 60px;
 }
 
-.title {
-  color: v-bind(headerColor);
+.error {
+  font-weight: bold;
+  color: red;
 }
 </style>
