@@ -6,7 +6,8 @@ export default {
     return {
       searchTerm: '',
       searchResults: [],
-      headerColor: '#ff0000',
+      loading: false,
+      error: false,
     }
   },
   computed: {
@@ -16,13 +17,26 @@ export default {
   },
   methods: {
     async fetchResults() {
-      const response = await axios.get(this.endpoint, {
-        params: {
-          limit: 20,
-          q: this.searchTerm,
-        },
-      })
-      this.searchResults = response?.data || []
+      this.loading = true
+      this.error = false
+      try {
+        const response = await axios.get(this.endpoint, {
+          params: {
+            limit: 20,
+            q: this.searchTerm,
+          },
+        })
+        this.searchResults =
+          response?.data.map((result) => ({
+            ...result,
+            liked: false,
+          })) || []
+      } catch {
+        this.error = true
+        this.searchResults = []
+      } finally {
+        this.loading = false
+      }
     },
   },
   mounted() {
@@ -32,13 +46,13 @@ export default {
 </script>
 
 <template>
-  <label for="header-color">Change the title color</label>
-  <input type="color" id="header-color" v-model="headerColor" />
-  <h1 class="title">Smashing Workshop: Lesson 1</h1>
+  <h1 class="title">Smashing Workshop: Lesson 2</h1>
   <section>
     <div>
       <input type="text" v-model="searchTerm" @keyup.enter="fetchResults" />
       <button @click="fetchResults">Search</button>
+      <p v-if="loading">Loading...</p>
+      <p v-if="error" class="error">Something went wrong. Please try again</p>
     </div>
     <div>
       <p v-for="result in searchResults" :key="result.id">{{ result.name }}</p>
