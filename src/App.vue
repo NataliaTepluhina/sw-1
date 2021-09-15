@@ -7,20 +7,34 @@ export default {
   setup() {
     const searchTerm = ref('')
     const searchResults = ref([])
-    const headerColor = ref('#ff0000')
+    const loading = ref(false)
+    const error = ref(false)
 
     const endpoint = computed(() =>
       searchTerm.value.length ? '/breeds/search' : '/breeds'
     )
 
     async function fetchResults() {
-      const response = await axios.get(endpoint.value, {
-        params: {
-          limit: 20,
-          q: searchTerm.value,
-        },
-      })
-      searchResults.value = response?.data || []
+      loading.value = true
+      error.value = false
+      try {
+        const response = await axios.get(endpoint.value, {
+          params: {
+            limit: 20,
+            q: searchTerm.value,
+          },
+        })
+        searchResults.value =
+          response?.data.map((result) => ({
+            ...result,
+            liked: false,
+          })) || []
+      } catch {
+        error.value = true
+        searchResults.value = []
+      } finally {
+        loading.value = false
+      }
     }
 
     onMounted(() => {
@@ -30,21 +44,22 @@ export default {
     return {
       searchTerm,
       searchResults,
-      headerColor,
       fetchResults,
+      loading,
+      error,
     }
   },
 }
 </script>
 
 <template>
-  <label for="header-color">Change the title color</label>
-  <input type="color" id="header-color" v-model="headerColor" />
-  <h1 class="title">Smashing Workshop: Lesson 1</h1>
+  <h1 class="title">Smashing Workshop: Lesson 2</h1>
   <section>
     <div>
       <input type="text" v-model="searchTerm" @keyup.enter="fetchResults" />
       <button @click="fetchResults">Search</button>
+      <p v-if="loading">Loading...</p>
+      <p v-if="error" class="error">Something went wrong. Please try again</p>
     </div>
     <div>
       <p v-for="result in searchResults" :key="result.id">{{ result.name }}</p>
@@ -64,5 +79,10 @@ export default {
 
 .title {
   color: v-bind(headerColor);
+}
+
+.error {
+  font-weight: bold;
+  color: red;
 }
 </style>
