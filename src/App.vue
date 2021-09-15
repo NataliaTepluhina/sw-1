@@ -70,7 +70,8 @@ export default {
   margin-top: 60px;
 }
 
-.title {
-  color: v-bind(headerColor);
+.error {
+  color: red;
+  font-weight: bold;
 }
 </style>
