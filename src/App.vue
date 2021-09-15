@@ -70,6 +70,11 @@ export default {
   margin-top: 60px;
 }
 
+.list-item {
+  padding: 10px;
+  border-bottom: 1px solid lightgray;
+}
+
 .error {
   color: red;
   font-weight: bold;
