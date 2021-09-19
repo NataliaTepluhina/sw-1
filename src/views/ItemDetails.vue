@@ -1,1 +1,0 @@
-<template>Items placeholder</template>
