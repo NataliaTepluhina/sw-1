@@ -1,5 +1,11 @@
 <template>
   <h1 class="title">Smashing Workshop: Lesson 2</h1>
+  <div>
+    <router-link :to="{ name: 'home' }">Home</router-link>
+    |
+    <router-link :to="{ name: 'item' }">Items</router-link>
+  </div>
+
   <router-view />
 </template>
 
