@@ -13,7 +13,9 @@ export default {
 <template>
   <div class="list-item" :class="{ liked: result.liked }">
     <h3>
-      <a :href="result.wikipedia_url">{{ result.name }}</a>
+      <router-link :to="{ name: 'items', params: { id: result.name } }">{{
+        result.name
+      }}</router-link>
     </h3>
     <p>
       {{ result.description }}

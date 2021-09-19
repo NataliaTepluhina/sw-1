@@ -8,8 +8,8 @@ export default [
     component: Home,
   },
   {
-    path: '/items',
-    name: 'item',
+    path: '/items/:id',
+    name: 'items',
     component: ItemDetails,
   },
 ]

@@ -1,1 +1,3 @@
-<template>Items placeholder</template>
+<template>
+  {{ $route.params.id }}
+</template>
