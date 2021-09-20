@@ -1,16 +1,22 @@
-import Home from './views/Home.vue'
-import ItemDetails from './views/ItemDetails.vue'
-
 export default [
   {
     path: '/',
     name: 'home',
-    component: Home,
+    component: () => import('./views/Home.vue'),
   },
   {
     path: '/items/:id',
     name: 'items',
-    component: ItemDetails,
+    component: () => import('./views/ItemDetails.vue'),
     props: true,
+  },
+  {
+    path: '/login',
+    name: 'login',
+    component: () => import('./views/Login.vue'),
+  },
+  {
+    path: '/:pathMatch(.*)',
+    component: () => import('./views/NotFound.vue'),
   },
 ]
