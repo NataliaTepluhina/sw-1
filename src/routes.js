@@ -11,5 +11,6 @@ export default [
     path: '/items/:id',
     name: 'items',
     component: ItemDetails,
+    props: true,
   },
 ]

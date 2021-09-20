@@ -13,9 +13,9 @@ export default {
 <template>
   <div class="list-item" :class="{ liked: result.liked }">
     <h3>
-      <router-link :to="{ name: 'items', params: { id: result.name } }">{{
-        result.name
-      }}</router-link>
+      <router-link :to="{ name: 'items', params: { id: result.id } }">
+        {{ result.name }}
+      </router-link>
     </h3>
     <p>
       {{ result.description }}
