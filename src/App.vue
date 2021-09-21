@@ -1,40 +1,22 @@
 <script>
-import { computed, ref, onMounted } from 'vue'
+import { onMounted } from 'vue'
 import axios from './middleware'
+import { useSearch } from './composables/useSearch'
 
 export default {
   setup() {
-    const searchTerm = ref('')
-    const searchResults = ref([])
-    const loading = ref(false)
-    const error = ref(false)
-
-    const endpoint = computed(() =>
-      searchTerm.value.length ? '/breeds/search' : '/breeds'
-    )
-
-    async function fetchResults() {
-      loading.value = true
-      error.value = false
-      try {
-        const response = await axios.get(endpoint.value, {
-          params: {
-            limit: 20,
-            q: searchTerm.value,
-          },
-        })
-        searchResults.value =
-          response?.data.map((result) => ({
-            ...result,
-            liked: false,
-          })) || []
-      } catch {
-        error.value = true
-        searchResults.value = []
-      } finally {
-        loading.value = false
-      }
-    }
+    const { searchTerm, searchResults, loading, error, fetchResults } =
+      useSearch((query) => {
+        const endpoint = query.length ? '/breeds/search' : '/breeds'
+        return axios
+          .get(endpoint, {
+            params: {
+              limit: 20,
+              q: query,
+            },
+          })
+          .then((r) => r.data)
+      })
 
     onMounted(() => {
       fetchResults()
@@ -52,6 +34,7 @@ export default {
 </script>
 
 <template>
+  {{ searchTerm }}
   <h1 class="title">Smashing Workshop: Lesson 2</h1>
   <section>
     <div>
