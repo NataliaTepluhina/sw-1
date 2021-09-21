@@ -1,6 +1,7 @@
 <script>
 import axios from '../middleware'
 import ListItem from '../components/ListItem.vue'
+import { mapState } from 'vuex'
 
 export default {
   components: {
@@ -9,12 +10,14 @@ export default {
   data() {
     return {
       searchTerm: '',
-      searchResults: [],
       loading: false,
       error: false,
     }
   },
   computed: {
+    ...mapState({
+      searchResults: (state) => state.items,
+    }),
     endpoint() {
       return this.searchTerm.length ? '/breeds/search' : '/breeds'
     },
@@ -46,8 +49,8 @@ export default {
       result.liked = !result.liked
     },
   },
-  mounted() {
-    this.fetchResults()
+  created() {
+    this.$store.commit('fetchResults')
   },
 }
 </script>
