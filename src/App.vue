@@ -1,7 +1,6 @@
 <script>
-import { computed, ref } from '@vue/reactivity'
+import { computed, ref, onMounted } from 'vue'
 import axios from './middleware'
-import { onMounted } from '@vue/runtime-core'
 
 export default {
   setup() {
