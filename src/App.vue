@@ -1,5 +1,16 @@
+<script>
+import { mapGetters } from 'vuex'
+
+export default {
+  computed: {
+    ...mapGetters(['numberOfLiked']),
+  },
+}
+</script>
+
 <template>
   <h1 class="title">Smashing Workshop: Lesson 2</h1>
+  Liked characters: {{ numberOfLiked }}
   <div>
     <router-link :to="{ name: 'home' }">Home</router-link>
   </div>

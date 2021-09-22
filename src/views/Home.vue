@@ -1,7 +1,6 @@
 <script>
-import axios from '../middleware'
 import ListItem from '../components/ListItem.vue'
-import { mapState } from 'vuex'
+import { mapState, mapActions } from 'vuex'
 
 export default {
   components: {
@@ -10,47 +9,18 @@ export default {
   data() {
     return {
       searchTerm: '',
-      loading: false,
-      error: false,
     }
   },
   computed: {
-    ...mapState({
-      searchResults: (state) => state.items,
-    }),
-    endpoint() {
-      return this.searchTerm.length ? '/breeds/search' : '/breeds'
-    },
+    ...mapState(['items', 'loading', 'error']),
   },
   methods: {
-    async fetchResults() {
-      this.loading = true
-      this.error = false
-      try {
-        const response = await axios.get(this.endpoint, {
-          params: {
-            limit: 20,
-            q: this.searchTerm,
-          },
-        })
-        this.searchResults =
-          response?.data.map((result) => ({
-            ...result,
-            liked: false,
-          })) || []
-      } catch {
-        this.error = true
-        this.searchResults = []
-      } finally {
-        this.loading = false
-      }
-    },
-    toggleLikeStatus(result) {
-      result.liked = !result.liked
-    },
+    ...mapActions(['fetchResults', 'toggleLikeStatus']),
   },
   created() {
-    this.$store.commit('fetchResults')
+    if (this.items.length === 0) {
+      this.fetchResults(this.searchTerm)
+    }
   },
 }
 </script>
@@ -59,15 +29,15 @@ export default {
   <section>
     <div>
       <input type="text" v-model="searchTerm" @keyup.enter="fetchResults" />
-      <button @click="fetchResults">Search</button>
+      <button @click="fetchResults(searchTerm)">Search</button>
       <p v-if="loading">Loading...</p>
       <p v-if="error" class="error">Something went wrong. Please try again</p>
     </div>
     <div>
-      <div v-for="result in searchResults" :key="result.id">
+      <div v-for="result in items" :key="result.id">
         <list-item
           :result="result"
-          @toggleLikeStatus="toggleLikeStatus(result)"
+          @toggleLikeStatus="toggleLikeStatus(result.id)"
         ></list-item>
       </div>
     </div>
