@@ -1,4 +1,5 @@
 import { createStore } from 'vuex'
+import * as types from './mutationTypes'
 
 export default createStore({
   state() {
@@ -7,7 +8,7 @@ export default createStore({
     }
   },
   mutations: {
-    fetchResults(state) {
+    [types.FETCH_RESULTS](state) {
       state.items = [
         {
           id: '1',
